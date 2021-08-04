@@ -1,5 +1,5 @@
 ﻿Connect-AzAccount -Environment AzureUSGovernment
-emp\$templateFile = "C:\Templates\Templates\bastion.json"
+$templateFile = "C:\Repro\Templates\bastion.json"
 $parameterFile = "C:\Repro\Templates\Bastion.parameters.josn"
 New-AzResourceGroupDeployment `
  -Name BastionTemplate `
