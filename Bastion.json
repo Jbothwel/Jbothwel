@@ -6,11 +6,11 @@
             "defaultValue": "jb-vnet",
             "type": "string"
         },
-        "vnet-name": {
+        "vnet_name": {
             "defaultValue": "jb-vnet",
             "type": "String"
         },
-        "publicIPAddress_name": {
+        "public_IPAddress_name": {
             "defaultValue": "jb-vnet-ip",
             "type": "String"
         },
@@ -40,7 +40,7 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('publicIPAddress_name')]",
+            "name": "[parameters('public_IPAddress_name')]",
             "location": "usdodeast",
             "sku": {
                 "name": "Standard",
@@ -57,7 +57,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('vnet-name')]",
+            "name": "[parameters('vnet_name')]",
             "location": "[parameters('location')]",
             "properties": {
                 "addressSpace": {
@@ -120,9 +120,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('vnet-name'), '/', parameters('appSubnet_name'))]",
+            "name": "[concat(parameters('vnet_name'), '/', parameters('appSubnet_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet-name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_name'))]"
             ],
             "properties": {
                 "addressPrefix": "10.0.3.0/27",
@@ -134,9 +134,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('vnet-name'), '/AzureBastionSubnet')]",
+            "name": "[concat(parameters('vnet_name'), '/AzureBastionSubnet')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet-name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_name'))]"
             ],
             "properties": {
                 "addressPrefix": "10.0.0.0/27",
@@ -148,9 +148,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('vnet-name'), '/', parameters('dcSubnet_name'))]",
+            "name": "[concat(parameters('vnet_name'), '/', parameters('dcSubnet_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet-name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_name'))]"
             ],
             "properties": {
                 "addressPrefix": "10.0.4.0/27",
@@ -163,9 +163,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('vnet-name'), '/', parameters('SQLSubnet_name'))]",
+            "name": "[concat(parameters('vnet_name'), '/', parameters('SQLSubnet_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet-name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_name'))]"
             ],
             "properties": {
                 "addressPrefix": "10.0.2.0/27",
@@ -177,9 +177,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('vnet-name'), '/', parameters('webSubnet_name'))]",
+            "name": "[concat(parameters('vnet_name'), '/', parameters('webSubnet_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet-name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_name'))]"
             ],
             "properties": {
                 "addressPrefix": "10.0.1.0/27",
@@ -194,8 +194,8 @@
             "name": "[parameters('bastion_name')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddress_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet-name'), 'AzureBastionSubnet')]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('public_IPAddress_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), 'AzureBastionSubnet')]"
             ],
             "sku": {
                 "name": "Basic"
@@ -208,10 +208,10 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddress_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('public_IPAddress_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet-name'), 'AzureBastionSubnet')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), 'AzureBastionSubnet')]"
                             }
                         }
                     }
