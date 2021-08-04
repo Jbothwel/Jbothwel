@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "bastion_name": {
+        "value": "jb-bastion"
+      },
+      "vnet_name": {
+        "value": "jb-vnet"
+      },
+      "public_IPAddress_name": {
+        "value": "jb-vnet-name"
+      },
+      "location": {
+        "value": "usdodeast"
+      },
+      "webSubnet_name":{
+        "value": "WebSubnet"
+      },
+      "SQLSubnet_name":{
+        "value": "SQLSubnet"
+      },
+      "appSubnet_name": {
+        "value": "AppSubnet"
+      },
+      "dcSubnet_name": {
+        "value": "DC-Subnet"
+      }
+    }
+  }
