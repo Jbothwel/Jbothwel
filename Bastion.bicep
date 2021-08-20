@@ -4,7 +4,7 @@ param public_IPAddress_name string = 'jb-vnet-ip'
 param location string = 'eastus'
 param webSubnet_name string = 'WebSubnet'
 param SQLSubnet_name string = 'SQLSubnet'
-param appSubnet_name string
+param appSubnet_name string = 'AppSubnet'
 param dcSubnet_name string = 'DCSubnet'
 
 resource public_IPAddress_name_resource 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
@@ -144,9 +144,6 @@ resource vnet_name_webSubnet_name 'Microsoft.Network/virtualNetworks/subnets@202
 resource bastion_name_resource 'Microsoft.Network/bastionHosts@2020-11-01' = {
   name: bastion_name
   location: location
-  sku: {
-    name: 'Basic'
-  }
   properties: {
     dnsName: 'bst-f1e99eeb-bd3a-452e-95f2-c4b329153292.bastion.usgovcloudapi.net'
     ipConfigurations: [
