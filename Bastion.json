@@ -3,19 +3,19 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "bastion_name": {
-            "defaultValue": "jb-vnet",
+            "defaultValue": "MIM-vnet",
             "type": "string"
         },
         "vnet_name": {
-            "defaultValue": "jb-vnet",
+            "defaultValue": "mim-vnet",
             "type": "String"
         },
         "public_IPAddress_name": {
-            "defaultValue": "jb-vnet-ip",
+            "defaultValue": "mim-vnet-ip",
             "type": "String"
         },
         "location": {
-            "defaultValue": "usdodeast",
+            "defaultValue": "eastus",
             "type": "string"
         },
         "webSubnet_name": {
@@ -31,7 +31,7 @@
       "type": "string"
       },
        "dcSubnet_name": {
-       "defaultValue": "DC-Subnet",
+       "defaultValue": "DCSubnet",
        "type": "string"
       }
     },
@@ -41,7 +41,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
             "name": "[parameters('public_IPAddress_name')]",
-            "location": "usdodeast",
+            "location": "eastus",
             "sku": {
                 "name": "Standard",
                 "tier": "Regional"

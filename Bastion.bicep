@@ -1,4 +1,4 @@
-param bastion_name string = 'mim-vnet'
+param bastion_name string = 'MIMBastion'
 param vnet_name string = 'mim-vnet'
 param public_IPAddress_name string = 'jb-vnet-ip'
 param location string = 'eastus'
