@@ -1,6 +1,6 @@
 param bastion_name string = 'MIMBastion'
 param vnet_name string = 'mim-vnet'
-param public_IPAddress_name string = 'jb-vnet-ip'
+param public_IPAddress_name string = 'mim-vnet-ip'
 param location string = 'eastus'
 param webSubnet_name string = 'WebSubnet'
 param SQLSubnet_name string = 'SQLSubnet'
@@ -85,17 +85,6 @@ resource vnet_name_resource 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   }
 }
 
-resource vnet_name_appSubnet_name 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
-  parent: vnet_name_resource
-  name: 'appSubnet_name'
-  properties: {
-    addressPrefix: '10.0.3.0/27'
-    delegations: []
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-  }
-}
-
 resource vnet_name_AzureBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
   parent: vnet_name_resource
   name: 'AzureBastionSubnet'
@@ -107,45 +96,11 @@ resource vnet_name_AzureBastionSubnet 'Microsoft.Network/virtualNetworks/subnets
   }
 }
 
-resource vnet_name_dcSubnet_name 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
-  parent: vnet_name_resource
-  name: 'dcSubnet_name'
-  properties: {
-    addressPrefix: '10.0.4.0/27'
-    serviceEndpoints: []
-    delegations: []
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-  }
-}
-
-resource vnet_name_SQLSubnet_name 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
-  parent: vnet_name_resource
-  name: 'SQLSubnet_name'
-  properties: {
-    addressPrefix: '10.0.2.0/27'
-    delegations: []
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-  }
-}
-
-resource vnet_name_webSubnet_name 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
-  parent: vnet_name_resource
-  name: 'webSubnet_name'
-  properties: {
-    addressPrefix: '10.0.1.0/27'
-    delegations: []
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-  }
-}
-
 resource bastion_name_resource 'Microsoft.Network/bastionHosts@2020-11-01' = {
   name: bastion_name
   location: location
   properties: {
-    dnsName: 'bst-f1e99eeb-bd3a-452e-95f2-c4b329153292.bastion.usgovcloudapi.net'
+    dnsName: 'bst-f1e99eeb-bd3a-452e-95f2-c4b329153292.bastion.azure.com'
     ipConfigurations: [
       {
         name: 'IpConf'
