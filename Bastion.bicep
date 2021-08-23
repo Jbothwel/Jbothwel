@@ -117,3 +117,12 @@ resource bastion_name_resource 'Microsoft.Network/bastionHosts@2020-11-01' = {
     ]
   }
 }
+
+module dcModule './Modules/Domain-Controller.bicep' = {
+  name: 'dcDeploy'
+  params: {
+    resourceGroup: 'MIM-rg'
+    location: location
+    subnetName: dcSubnet_name
+  }
+}
