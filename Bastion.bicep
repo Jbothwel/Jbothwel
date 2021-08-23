@@ -1,7 +1,7 @@
 param bastion_name string = 'MIMBastion'
 param vnet_name string = 'mim-vnet'
 param public_IPAddress_name string = 'mim-vnet-ip'
-param location string = 'westus'
+param location string = 'eastus'
 param webSubnet_name string = 'WebSubnet'
 param SQLSubnet_name string = 'SQLSubnet'
 param appSubnet_name string = 'AppSubnet'
