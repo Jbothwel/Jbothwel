@@ -1,3 +1,4 @@
+param subscriptionID string
 param bastion_name string = 'MIMBastion'
 param vnet_name string = 'mim-vnet'
 param public_IPAddress_name string = 'mim-vnet-ip'
@@ -85,6 +86,17 @@ resource vnet_name_resource 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   }
 }
 
+resource vnet_name_dcSubnet 'Microsoft.Network/VirtualNetworks/subnets@2019-11-01' = {
+  parent: vnet_name_resource
+  name: 'dcSubnet'
+  properties: {
+    addressPrefix: '10.0.4.0/27'
+    serviceEndpoints: []
+    privateEndpointNetworkPolicies: 'Enabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+  }
+}
+
 resource vnet_name_AzureBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
   parent: vnet_name_resource
   name: 'AzureBastionSubnet'
@@ -118,10 +130,11 @@ resource bastion_name_resource 'Microsoft.Network/bastionHosts@2020-11-01' = {
   }
 }
 
-module dcModule './Modules/Domain-Controller.bicep' = {
+module dcModule 'Modules/Domain-Controller.bicep' = {
   name: 'dcDeploy'
-  params: {
+  params:{
     location: location
-    subnetName: dcSubnet_name
+    subNetID: vnet_name_dcSubnet.id
+    subscriptionID: subscriptionID
   }
 }
