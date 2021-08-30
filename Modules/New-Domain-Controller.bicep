@@ -1,11 +1,10 @@
-param location string
-param subscriptionID string
-param osDiskID string = concat('/subscriptions/${subscriptionID}/resourceGroups/MIM-rg/providers/Microsoft.Compute/disks/MIM-DC-01_OsDisk')
-param subNetID string
+param virtualMachines_MIM_DC01_name string = 'MIM-DC01'
+param disks_MIM_DC01_disk1_8207eb8f6783441eb185329d690bdf0c_externalid string = '/subscriptions/cb012496-ce0b-4c24-9afe-bb7e27ca8f42/resourceGroups/MIM-rg/providers/Microsoft.Compute/disks/MIM-DC01_disk1_8207eb8f6783441eb185329d690bdf0c'
+param networkInterfaces_mim_dc01833_externalid string = '/subscriptions/cb012496-ce0b-4c24-9afe-bb7e27ca8f42/resourceGroups/MIM-rg/providers/Microsoft.Network/networkInterfaces/mim-dc01833'
 
-resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachines@2021-03-01' = {
-  name: 'MIM-DC01'
-  location: location
+resource virtualMachines_MIM_DC01_name_resource 'Microsoft.Compute/virtualMachines@2021-03-01' = {
+  name: virtualMachines_MIM_DC01_name
+  location: 'eastus'
   properties: {
     hardwareProfile: {
       vmSize: 'Standard_B2ms'
@@ -19,20 +18,20 @@ resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachi
       }
       osDisk: {
         osType: 'Windows'
-        name: 'OsDisk'
+        name: '${virtualMachines_MIM_DC01_name}_disk1_8207eb8f6783441eb185329d690bdf0c'
         createOption: 'FromImage'
         caching: 'ReadWrite'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
+          id: disks_MIM_DC01_disk1_8207eb8f6783441eb185329d690bdf0c_externalid
         }
         diskSizeGB: 127
       }
       dataDisks: []
     }
     osProfile: {
-      computerName: 'MIM-DC01'
-      adminUsername: 'xAdministrator'
-      adminPassword: '1qazXSW@3edcVFR$'
+      computerName: virtualMachines_MIM_DC01_name
+      adminUsername: 'xadministrator'
       windowsConfiguration: {
         provisionVMAgent: true
         enableAutomaticUpdates: true
@@ -47,25 +46,9 @@ resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachi
       requireGuestProvisionSignal: true
     }
     networkProfile: {
-      networkApiVersion: '2020-11-01'
-      networkInterfaceConfigurations: [
+      networkInterfaces: [
         {
-          name: 'MIM-DC-01592'
-          properties: {
-            deleteOption: 'Delete'
-            ipConfigurations: [
-              {
-                name: 'MIM-DC01-pi'
-                properties: {
-                  primary: true
-                  privateIPAddressVersion: 'IPv4'
-                  subnet: {
-                    id: subNetID
-                  }
-                }
-              }
-            ]
-          }
+          id: networkInterfaces_mim_dc01833_externalid
         }
       ]
     }
