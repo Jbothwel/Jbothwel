@@ -1,10 +1,40 @@
-param location string
-param subscriptionID string
-param osDiskID string = concat('/subscriptions/${subscriptionID}/resourceGroups/MIM-rg/providers/Microsoft.Compute/disks/MIM-DC-01_OsDisk')
+param location string = resourceGroup().location
 param subNetID string
+//param AutomationAccountName string = 'MIM-Automation'
+param vmName string = 'MI-DC01'
+
+@description('Relative path for the DSC configuration module.')
+param moduleFilePath string = 'MIMDomainController.ps1.zip'
+
+@description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
+param artifactsLocation string = deployment().properties.templateLink.uri
+
+@description('DSC configuration function to call')
+param configurationFunction string = 'MIMDomainControler.ps1\\DCPromo'
+
+@description('The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated.')
+@secure()
+param artifactsLocationSasToken string = ''
+
+resource DC1NIC 'Microsoft.Network/networkInterfaces@2021-02-01' = {
+  name: 'MIM-DC-01592'
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          subnet: {
+            id: subNetID
+          }
+        }
+      }
+    ]
+  }
+}
 
 resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachines@2021-03-01' = {
-  name: 'MIM-DC01'
+  name: vmName
   location: location
   properties: {
     hardwareProfile: {
@@ -30,7 +60,7 @@ resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachi
       dataDisks: []
     }
     osProfile: {
-      computerName: 'MIM-DC01'
+      computerName: vmName
       adminUsername: 'xAdministrator'
       adminPassword: '1qazXSW@3edcVFR$'
       windowsConfiguration: {
@@ -44,34 +74,40 @@ resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachi
       }
       secrets: []
       allowExtensionOperations: true
-      requireGuestProvisionSignal: true
     }
     networkProfile: {
-      networkApiVersion: '2020-11-01'
-      networkInterfaceConfigurations: [
+      networkInterfaces: [
         {
-          name: 'MIM-DC-01592'
+          id: DC1NIC.id
           properties: {
+            primary: true
             deleteOption: 'Delete'
-            ipConfigurations: [
-              {
-                name: 'MIM-DC01-pi'
-                properties: {
-                  primary: true
-                  privateIPAddressVersion: 'IPv4'
-                  subnet: {
-                    id: subNetID
-                  }
-                }
-              }
-            ]
-          }
+          } 
         }
       ]
     }
     diagnosticsProfile: {
       bootDiagnostics: {
         enabled: true
+      }
+    }
+  } 
+}
+
+resource vmName_vmExtensionName 'Microsoft.Compute/virtualMachines/extensions@2019-12-01' = {
+  parent: virtualMachines_MIM_DC_01_name_resource
+  name: 'dscExtension'
+  location: location
+  properties: {
+    publisher: 'Microsoft.Powershell'
+    type: 'DSC'
+    typeHandlerVersion: '2.19'
+    autoUpgradeMinorVersion: true
+    settings: {
+      ModulesUrl: uri(artifactsLocation, '${moduleFilePath}${artifactsLocationSasToken}')
+      ConfigurationFunction: configurationFunction
+      Properties: {
+        MachineName: vmName
       }
     }
   }

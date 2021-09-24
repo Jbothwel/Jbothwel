@@ -1,0 +1,1 @@
+az deployment group create --resource-group MIM-rg --name MIM-Deployment --template-file Bastion.bicep --parameters Bastion.Parameters.json
