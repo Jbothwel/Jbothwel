@@ -3,14 +3,26 @@ param subNetID string
 //param AutomationAccountName string = 'MIM-Automation'
 param vmName string = 'MI-DC01'
 
+@description('Domain Name')
+param domainName string = 'Cntoso.com'
+
+@description('Choose the filtered sync type.')
+param filteredSync string = 'Disabled'
+
+@description('Domain Configuration Type.')
+param domainConfigurationType string = 'FullySynced'
+
+@description('SKU of the AD Domain Service.')
+param sku string = 'Enterprise'
+
 @description('Relative path for the DSC configuration module.')
-param moduleFilePath string = 'MIMDomainController.ps1.zip'
+param moduleFilePath string = 'CreateADPC.ps1.zip'
 
 @description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
 param artifactsLocation string = deployment().properties.templateLink.uri
 
 @description('DSC configuration function to call')
-param configurationFunction string = 'MIMDomainControler.ps1\\DCPromo'
+param configurationFunction string = 'CreateADPDC.ps1\\CreateADPDC'
 
 @description('The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated.')
 @secure()
@@ -96,7 +108,7 @@ resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachi
 
 resource vmName_vmExtensionName 'Microsoft.Compute/virtualMachines/extensions@2019-12-01' = {
   parent: virtualMachines_MIM_DC_01_name_resource
-  name: 'dscExtension'
+  name: 'CreateADForest'
   location: location
   properties: {
     publisher: 'Microsoft.Powershell'
@@ -107,8 +119,28 @@ resource vmName_vmExtensionName 'Microsoft.Compute/virtualMachines/extensions@20
       ModulesUrl: uri(artifactsLocation, '${moduleFilePath}${artifactsLocationSasToken}')
       ConfigurationFunction: configurationFunction
       Properties: {
+        DomainNam: domainName
+        UserName: 'xAdminstrator'
+        Password: '1qazXSW@3edcVFR$'
         MachineName: vmName
       }
     }
+  }
+}
+
+resource domainName_resource 'Microsoft.AAD/domainServices@2020-01-01' = {
+  name: domainName
+  location: location
+  properties: {
+    domainName: domainName
+    filteredSync: filteredSync
+    domainConfigurationType: domainConfigurationType
+    replicaSets: [
+      {
+        subnetId: subNetID
+        location: location
+      }
+    ]
+    sku: sku
   }
 }
