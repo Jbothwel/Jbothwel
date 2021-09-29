@@ -117,12 +117,12 @@ resource vmName_vmExtensionName 'Microsoft.Compute/virtualMachines/extensions@20
       ModulesUrl: uri('${artifactsLocation}/DSC/CreateADPC.zip', '${moduleFilePath}${artifactsLocationSasToken}')
       ConfigurationFunction: configurationFunction
       Properties: {
-        DomainNam: domainName
-        AdminCreds: {
+        DomainName: domainName
+        Admincreds: {
           UserName: adminUsername
           Password: 'PrivateSettingsRef:AdminPassword'
         }
-        MachineName: vmName
+        //MachineName: vmName
       }
     }
     protectedSettings: {
