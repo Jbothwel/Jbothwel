@@ -1,11 +1,17 @@
 param location string = resourceGroup().location
 param subNetID string
 //param AutomationAccountName string = 'MIM-Automation'
+@description('The name of the administrator account of the new VM and domain')
+param adminUsername string = 'xAdministration'
+
+@description('The password for the administrator account of the new VM and domain')
+@secure()
+param adminPassword string
+
 param vmName string = 'MIM-DC01'
 
 @description('Domain Name')
 param domainName string = 'Contoso.com'
-
 
 @description('Relative path for the DSC configuration module.')
 param moduleFilePath string = 'DSC/CreateADPC.ps1.zip'
@@ -65,7 +71,7 @@ resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachi
     }
     osProfile: {
       computerName: vmName
-      adminUsername: 'xAdministrator'
+      adminUsername: adminUsername
       adminPassword: '1qazXSW@3edcVFR$'
       windowsConfiguration: {
         provisionVMAgent: true
@@ -113,10 +119,15 @@ resource vmName_vmExtensionName 'Microsoft.Compute/virtualMachines/extensions@20
       Properties: {
         DomainNam: domainName
         AdminCreds: {
-          UserName: 'xAdminstrator'
-          Password: '1qazXSW@3edcVFR$'
+          UserName: adminUsername
+          Password: 'PrivateSettingsRef:AdminPassword'
         }
         MachineName: vmName
+      }
+    }
+    protectedSettings: {
+      Items: {
+        adminPassword: adminPassword
       }
     }
   }
