@@ -6,7 +6,7 @@ param adminUsername string = 'xAdministration'
 
 @description('The password for the administrator account of the new VM and domain')
 @secure()
-param adminPassword string
+param adminPassword string = ''
 
 param vmName string = 'MIM-DC01'
 
