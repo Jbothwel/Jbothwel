@@ -1,24 +1,30 @@
 param location string = resourceGroup().location
 param subNetID string
 //param AutomationAccountName string = 'MIM-Automation'
+@description('The name of the administrator account of the new VM and domain')
+param adminUsername string = 'xAdministrator'
+
+@description('The password for the administrator account of the new VM and domain')
+@secure()
+param adminPassword string = ''
+
 param vmName string = 'MIM-DC01'
 
 @description('Domain Name')
 param domainName string = 'Contoso.com'
 
+/*@description('Relative path for the DSC configuration module.')
+param moduleFilePath string = 'DSC/CreateADPC.zip'*/
 
-@description('Relative path for the DSC configuration module.')
-param moduleFilePath string = 'DSC/CreateADPC.ps1.zip'
+/*@description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
+param artifactsLocation string = 'https://dev.azure.com/jobothw/_git/Templates'*/
 
-@description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
-//param artifactsLocation string = deployment().properties.templateLink.uri
-param artifactsLocation string = 'https://dev.azure.com/jobothw/_git/Templates'
 @description('DSC configuration function to call')
 param configurationFunction string = 'CreateADPDC.ps1\\CreateADPDC'
 
-@description('The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated.')
+/*@description('The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated.')
 @secure()
-param artifactsLocationSasToken string = ''
+param artifactsLocationSasToken string = ''*/
 
 resource DC1NIC 'Microsoft.Network/networkInterfaces@2021-02-01' = {
   name: 'MIM-DC-01592'
@@ -65,7 +71,7 @@ resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachi
     }
     osProfile: {
       computerName: vmName
-      adminUsername: 'xAdministrator'
+      adminUsername: adminUsername
       adminPassword: '1qazXSW@3edcVFR$'
       windowsConfiguration: {
         provisionVMAgent: true
@@ -99,6 +105,9 @@ resource virtualMachines_MIM_DC_01_name_resource 'Microsoft.Compute/virtualMachi
 }
 
 resource vmName_vmExtensionName 'Microsoft.Compute/virtualMachines/extensions@2019-12-01' = {
+  dependsOn: [
+    virtualMachines_MIM_DC_01_name_resource
+    ]
   parent: virtualMachines_MIM_DC_01_name_resource
   name: 'CreateADForest'
   location: location
@@ -108,17 +117,24 @@ resource vmName_vmExtensionName 'Microsoft.Compute/virtualMachines/extensions@20
     typeHandlerVersion: '2.19'
     autoUpgradeMinorVersion: true
     settings: {
-      ModulesUrl: uri('${artifactsLocation}/DSC/CreateADPC.zip', '${moduleFilePath}${artifactsLocationSasToken}')
-      ConfigurationFunction: configurationFunction
+   //ModulesUrl: uri('${artifactsLocation}/DSC/CreateADPC.zip', '${moduleFilePath}${artifactsLocationSasToken}')
+   //ModulesUrl: uri('${artifactsLocation}/${moduleFilePath}', '${moduleFilePath}${artifactsLocationSasToken}')
+   //ModuleUrl: uri('https://dev.azure.com/jobothw/_git/Templates?path=/DSC/CreateADPDC.zip', '${moduleFilePath}${artifactsLocationSasToken}')
+   ModuleUrl: uri('https://dev.azure.com/jobothw/_git/Templates', '?path=/DSC/CreateADPDC.zip')
+   ConfigurationFunction: configurationFunction
       Properties: {
-        DomainNam: domainName
-        AdminCreds: {
-          UserName: 'xAdminstrator'
-          Password: '1qazXSW@3edcVFR$'
+        DomainName: domainName
+        Admincreds: {
+          UserName: adminUsername
+          Password: 'PrivateSettingsRef:AdminPassword'
         }
         MachineName: vmName
       }
     }
+    protectedSettings: {
+      Items: {
+        adminPassword: adminPassword
+      }
+    }
   }
 }
-

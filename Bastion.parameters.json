@@ -3,28 +3,28 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
       "bastion_name": {
-        "value": "mim-bastion"
+        "value": "MIMBastion"
       },
       "vnet_name": {
         "value": "mim-vnet"
       },
       "public_IPAddress_name": {
-        "value": "mimvnet-name"
+        "value": "mim-vnet-name"
       },
       "location": {
         "value": "eastus"
-      },
+       },
       "webSubnet_name":{
-        "value": "webSubnet"
+        "value": "WebSubnet"
       },
       "SQLSubnet_name":{
-        "value": "SqlSubnet"
+        "value": "SQLSubnet"
       },
       "appSubnet_name": {
         "value": "AppSubnet"
       },
       "dcSubnet_name": {
         "value": "DCSubnet"
-      }      
+      }
     }
   }
