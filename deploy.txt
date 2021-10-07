@@ -1,1 +1,1 @@
-az deployment group create --resource-group MIM-rg --name MIM-Deployment --template-file Bastion.bicep --parameters Bastion.Parameters.json --parameters adminPassword="1qazXSW@3edcVFR$"
+az deployment group create --resource-group MIM-rg --name MIM-Deployment --template-file Bastion.bicep --parameters Bastion.Parameters.json
