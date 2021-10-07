@@ -8,8 +8,6 @@ param webSubnet_name string = 'WebSubnet'
 param SQLSubnet_name string = 'SQLSubnet'
 param appSubnet_name string = 'AppSubnet'
 param dcSubnet_name string = 'DCSubnet'
-@secure()
-param adminPassword string = ''
 
 resource bastionHostIP 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
   name: 'bastionIPName'
@@ -350,7 +348,6 @@ module dcModule 'Modules/Domain-Controller.bicep' = {
   params:{
     location: location
     subNetID: vnet_name_dcSubnet.id
-    adminPassword: adminPassword
   }
   dependsOn: [
     vnet_name_dcSubnet
