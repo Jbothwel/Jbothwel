@@ -1,0 +1,1 @@
+﻿Publish-AzVMDscConfiguration ".\CreateADPDC.ps1" -OutputArchivePath ".\CreateADPDC.zip"
